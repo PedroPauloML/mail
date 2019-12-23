@@ -4,9 +4,17 @@
     <meta charset='UTF-8' />
     <title><%= "#{SITE_NAME}#{!!@page_title ? " | #{@page_title}" : ""}" %></title>
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
   </head>
   <body>
+    <div
+      id="xhr-progress-bar"
+      class="progress-bar progress-bar-striped bg-info"
+      role="progressbar"
+      aria-valuemin="0"
+      aria-valuemax="100"></div>
+
     <div class="container">
       <%= yield %>
     </div>

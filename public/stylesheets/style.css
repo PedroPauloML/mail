@@ -1,0 +1,17 @@
+#xhr-progress-bar {
+  position: absolute;
+  height: 5px;
+  left: 0;
+  z-index: 1;
+  width: 0;
+}
+
+#spinner-table {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

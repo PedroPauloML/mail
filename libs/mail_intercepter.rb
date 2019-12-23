@@ -37,10 +37,36 @@ class MailIntercepter
       headers = payload.headers
       object = {}
 
-      object[:date] = headers.any? { |h| h.name == 'Date' } ? headers.find { |h| h.name == 'Date' }.value : ''
-      object[:from] = headers.any? { |h| h.name == 'From' } ? headers.find { |h| h.name == 'From' }.value : ''
-      object[:to] = headers.any? { |h| h.name == 'To' } ? headers.find { |h| h.name == 'To' }.value : ''
-      object[:subject] = headers.any? { |h| h.name == 'Subject' } ? headers.find { |h| h.name == 'Subject' }.value : ''
+      object[:id] = message.id
+
+      if headers.any? { |h| h.name == 'Date' }
+        object[:date] = headers.find { |h| h.name == 'Date' }.value
+        object[:date_formatted] = (
+          DateTime.strptime(object[:date], "%a, %d %b %Y %T %z")
+            .new_offset(-3.0/24)
+            .strftime("%d/%m/%Y %T")
+        )
+      else
+        object[:date] = ""
+      end
+
+      if headers.any? { |h| h.name == 'From' }
+        object[:from] = headers.find { |h| h.name == 'From' }.value
+      else
+        object[:from] = ""
+      end
+
+      if headers.any? { |h| h.name == 'To' }
+        object[:to] = headers.find { |h| h.name == 'To' }.value
+      else
+        object[:to] = ""
+      end
+
+      if headers.any? { |h| h.name == 'Subject' }
+        object[:subject] = headers.find { |h| h.name == 'Subject' }.value
+      else
+        object[:subject] = ""
+      end
 
       object[:body] = payload.body.data
       if object[:body].nil? && payload.parts.any?
@@ -49,6 +75,9 @@ class MailIntercepter
 
       object
     end
+  end
+
+  def inbox_unread
   end
 
   private
