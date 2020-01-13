@@ -6,7 +6,7 @@
   width: 0;
 }
 
-#spinner-table {
+.spinner-table {
   position: absolute;
   width: 100%;
   height: 100%;

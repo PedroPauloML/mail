@@ -11,15 +11,15 @@ get "/" do
   erb :index
 end
 
-get "/inbox.json" do
+get "/gmail_inbox.json" do
   content_type :json
-  mi = MailIntercepter.new
-  puts ">>> page: #{params[:page]}"
-  messages = mi.inbox(params[:page] || 1)
-  messages.each_with_index do |v, i|
-    messages[i][:body] = v[:body].force_encoding("ISO-8859-1").encode("UTF-8")
+  # raise ">>> params: #{params}"
+  mi = MailIntercepter::GMAIL.new
+  response = mi.inbox(params[:options] || {})
+  response[:data].each_with_index do |v, i|
+    response[:data][i][:body] = v[:body].force_encoding("ISO-8859-1").encode("UTF-8")
   end
-  { inbox: messages }.to_json
+  response.to_json
 end
 
 SITE_NAME = "Mail"
