@@ -1,29 +1,35 @@
 $(() => {
   $(document).ready(() => {
-    let btn_filter = document.getElementById("filter-gmail-mails")
-    let filter_from = document.getElementById("gmail-from")
-    let filter_is_unread = document.getElementById("gmail-is-unread")
+    let table_mails = document.getElementById("outlook-mails")
 
-    btn_filter.onclick = (evt) => fetchMails()
-    filter_from.onkeyup = (evt) => {
-      if (evt.keyCode == 13) { fetchMails() }
-    }
-    filter_is_unread.onchange = (evt) => fetchMails()
+    if (table_mails) {
+      let btn_filter = document.getElementById("filter-outlook-mails")
+      let filter_from = document.getElementById("outlook-from")
+      let filter_is_unread = document.getElementById("outlook-is-unread")
 
-    fetchMails((succeed = true) => {
-      if (succeed) {
-        let container_filters = document.getElementById("gmail-filters")
-        container_filters.classList.add("d-flex")
-        container_filters.classList.remove("d-none")
+      btn_filter.onclick = (evt) => fetchMails()
+      filter_from.onkeyup = (evt) => {
+        if (evt.keyCode == 13) { fetchMails() }
       }
-    })
+      filter_is_unread.onchange = (evt) => fetchMails()
+
+      fetchMails((succeed = true) => {
+        if (succeed) {
+          let container_filters = document.getElementById("outlook-filters")
+          container_filters.classList.add("d-flex")
+          container_filters.classList.remove("d-none")
+        }
+      })
+    }
   })
 
   function fetchMails(callback = (succeed) => {}) {
-    let spinner_table = document.getElementById("gmail-spinner-table")
-    let filter_from = document.getElementById("gmail-from")
-    let filter_is_unread = document.getElementById("gmail-is-unread")
-    let btn_filter = document.getElementById("filter-gmail-mails")
+    let spinner_table = document.getElementById("outlook-spinner-table")
+    let filter_from = document.getElementById("outlook-from")
+    let filter_is_unread = document.getElementById("outlook-is-unread")
+    let btn_filter = document.getElementById("filter-outlook-mails")
+    let icon_fetching_outlook = document.getElementById("fetching-outlook")
+    let icon_fetched_outlook = document.getElementById("fetched-outlook")
 
     if (btn_filter && !btn_filter.disabled) {
       let url = new URL(document.location.host + "/inbox.json")
@@ -40,7 +46,7 @@ $(() => {
       }
 
       $.ajax({
-        url: "/gmail_inbox.json" + url.search,
+        url: "/outlook_inbox.json" + url.search,
         method: "GET",
         dataType: "json",
         xhr: () => {
@@ -76,6 +82,8 @@ $(() => {
         },
         beforeSend: () => {
           spinner_table.classList.remove("d-none")
+          icon_fetching_outlook.classList.remove("d-none")
+          icon_fetched_outlook.classList.add("d-none")
           filter_from.disabled = true
           filter_is_unread.disabled = true
           btn_filter.disabled = true
@@ -84,7 +92,7 @@ $(() => {
         success: (response) => {
           console.log("Success...")
           console.log(response)
-          table_mails = document.getElementById("gmail-mails")
+          table_mails = document.getElementById("outlook-mails")
 
           table_mails.dataset.nextPageToken = response.next_page_token
           table_mails.tBodies[0].innerHTML = ""
@@ -136,6 +144,8 @@ $(() => {
           if (xhr_progress_bar) {
             setTimeout(() => { xhr_progress_bar.style.width = "0" }, 1000)
           }
+          icon_fetching_outlook.classList.add("d-none")
+          icon_fetched_outlook.classList.remove("d-none")
           spinner_table.classList.add("d-none")
           filter_from.disabled = false
           filter_is_unread.disabled = false
